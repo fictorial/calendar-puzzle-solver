@@ -10,6 +10,8 @@ I became curious about how one might automatically solve for all dates and,
 well, here we are. A simple algorithm finds all solutions (there are 1000s) in
 10 minutes or so. One solution per date is here included.
 
+[View solutions here](https://fictorial.github.io/calendar-puzzle-solver/)
+
 ## Definitions
 
 ### Board
