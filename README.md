@@ -8,7 +8,7 @@ thereof.  Repeat daily.
 
 I became curious about how one might automatically solve for all dates and,
 well, here we are. A simple algorithm finds all solutions (there are 1000s) in
-10 minutes or so. One solution per date is here included.
+less than 10 minutes. One solution per date is here included.
 
 ## Definitions
 
@@ -60,11 +60,18 @@ take about *20000 years* to complete.
 Shuffle piece order and piece form order. Place first piece form of each logical
 piece on board. If a piece form from each logical piece fits together, check if
 it's a valid solution and record it if so.  Repeat until all solutions are
-found. This approach takes ~10 minutes on a 2018 Mac Mini so there's no need to
-optimize further as the solution is reused.
+found.
+
+## Implementation
+
+Included is a C language implementation and a HTML5 visualizer.
+It was developed on Mac OS X Monterey.
+It launches N threads which run in parallel, locking only when a potential solution is found.
+It runs in about a minute on a 2018 Mac Mini or 10 minutes if you are unlucky (remember, it's random).
 
 ## Usage
 
-    node .
+    make clean
+    make
+    open index.html
 
-The file `solutions.json` is then written. A visualization that uses HTML5 canvas is included. The solutions JSON is simply embedded in the `index.html` file.

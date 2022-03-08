@@ -1,0 +1,2 @@
+const date = new Date();
+drawsol(months[date.getMonth()], String(date.getDate()));

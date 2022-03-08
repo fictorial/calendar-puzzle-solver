@@ -1,3 +1,6 @@
+solver
+.DS_Store
+
 # Logs
 logs
 *.log
