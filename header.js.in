@@ -22,10 +22,11 @@ let ncolors = colors.length
 let ctx = $c.getContext('2d');
 $c.width = $c.height = 7*sq + 2*border_width;
 
-$date.valueAsDate = new Date()
-$date.addEventListener('change', () => {
-    const date = $date.valueAsDate;
-    drawsol(months[date.getMonth()], String(date.getDate() + 1));
+var f = new Date();
+$date.valueAsDate = new Date(f.getFullYear(), f.getMonth(), f.getDate(), 12);
+$date.addEventListener('change', (e) => {
+    const d = $date.valueAsDate;
+    drawsol(months[d.getUTCMonth()], String(d.getUTCDate()));
 });
 
 const oob = (x,y) => (y<2 &&x>=6) || (y===6 && x>2) || y<0 || x<0;
