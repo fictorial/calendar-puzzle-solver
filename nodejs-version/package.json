@@ -1,0 +1,14 @@
+{
+  "name": "calendar-puzzle-solver",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Solves the calendar puzzle",
+  "main": "index.js",
+  "dependencies": {
+    "pcg-random": "^2.0.0"
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "author": "Brian Hammond <brian@fictorial.com>",
+  "license": "ISC"
+}
