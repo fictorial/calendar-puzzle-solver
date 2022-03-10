@@ -1,5 +1,7 @@
 solver
 .DS_Store
+solutions.js
+demo.js
 
 # Logs
 logs
