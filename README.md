@@ -10,7 +10,11 @@ I became curious about how one might automatically solve for all dates and,
 well, here we are. A simple algorithm finds all solutions (there are 1000s) in
 less than 10 minutes. One solution per date is here included.
 
-[View solutions here](https://fictorial.github.io/calendar-puzzle-solver/)
+## HTML5 Visualization
+
+Included is a HTML5 visualization of the solutions.
+
+[Online version](https://fictorial.github.io/calendar-puzzle-solver/)
 
 ## Definitions
 
@@ -36,7 +40,7 @@ There are choose(43,2)=903 if all combinations including month-month and day-day
 
 ![piece forms](piece_forms.png)
 
-## Exhaustive Search Approach
+## Exhaustive Search Approach (not used)
 
 Enumerate all combinations of piece forms. For each piece form, enumerate all
 possible placements of the piece form on an empty board. Merge the piece form
@@ -57,23 +61,125 @@ take about *20000 years* to complete.
     524288 * 25.6e12
     = 13421772800000000000
 
-## Stochastic Approach
+## Stochastic Approach (used)
 
 Shuffle piece order and piece form order. Place first piece form of each logical
 piece on board. If a piece form from each logical piece fits together, check if
 it's a valid solution and record it if so.  Repeat until all solutions are
 found.
 
-## Implementation
+> Since solutions are randomly discovered, many previously solved dates are
+> repeatedly solved. Thus, as progress gets closer to 100%, it becomes much more
+> difficult to find a solution for any of the few remaining dates to be solved.
 
-Included is a C language implementation and a HTML5 visualizer.
-It was developed on Mac OS X Monterey.
-It launches N threads which run in parallel, locking only when a potential solution is found.
-It runs in about a minute on a 2018 Mac Mini or 10 minutes if you are unlucky (remember, it's random).
+## Implementations
 
-## Usage
+There are several implementations included.
 
-    make clean
-    make
-    open index.html
+## Development machine
 
+All development was performed on a 2018 Mac Mini running OS X Monterey.
+
+- C
+  - Apple clang version 13.0.0 (clang-1300.0.29.30)
+  - Target: x86_64-apple-darwin21.3.0
+- Python
+  - Python 3.9.10 (8276b505180f70c5784a698a510f0a17317a85c3, Feb 19 2022, 16:51:03)
+  - [PyPy 7.3.8 with GCC Apple LLVM 13.0.0 (clang-1300.0.29.30)]
+- Node.js
+  - v16.11.1
+
+### C (default)
+
+This version launches N threads which run in parallel, locking only when a
+potential solution is found.  It runs in about a minute (or 10 minutes if you
+mad the RNG mad).
+
+#### Running
+
+This version automatically updates the HTML5 visualization files as needed. It's the fastest option and thus the default. The other versions dump a `solutions.json` file which you can (if you want) simply copy into the index.html file after running this C version at least once.
+
+```bash
+make clean
+make
+open index.html
+```
+
+### Node.js
+
+This version uses worker threads to generate potentially unique solutions.
+
+#### Running
+
+```bash
+cd nodejs-version
+time make
+time make cpu-profile
+time make profile
+```
+
+#### Conclusions
+
+V8 is "weird" in that it only uses half the number of cores which apparently
+actually makes sense technically (see README for links) but isn't all that
+useful. See [1], [2].
+
+[1]: https://github.com/nodejs/help/issues/2316
+[2]: https://github.com/denoland/deno/issues/10592#issuecomment-838982656
+
+### Python
+
+- CPython reached 90% solved in 40 minutes.
+- CPython with multiprocessing reached 90% solved in 10 minutes.
+- PyPy reached 90% solved in 3 minutes.
+- PyPy with multiprocessing reached 90% solved in 3 minutes.
+
+Why 90%? To reach 100%, there are fewer and fewer solutions for
+dates that have yet to be discovered so the time between new solutions
+increases dramatically.
+
+#### Running
+
+```bash
+cd python-version
+
+echo "pypy no multiprocessing"
+time N_SOLUTIONS=334 pypy3 solver.py
+
+echo "pypy with multiprocessing"
+time N_SOLUTIONS=334 MP=1 pypy3 solver.py
+
+echo "cpython no multiprocessing"
+time N_SOLUTIONS=334 python3 solver.py
+
+echo "cpython with multiprocessing"
+time N_SOLUTIONS=334 MP=1 python3 solver.py
+```
+
+#### Conclusions
+
+- PyPy is a nice speedup over CPython (... in this case)
+- Multiprocessing doesn't add much for PyPy...
+  - The 6 cores on the dev machine were steady at ~45% utilization
+    for some reason (communication overhead?).
+
+#### Other things to consider
+
+- NumPy instead of vanilla Python lists for board and piece form representations
+- Better piece representation (indexes where there's a value and nothing more)
+- PCG RNG instead of MT which is what Python uses under the covers
+
+---
+
+## Future
+
+- Add other implementations
+  - Julia
+  - Go
+  - Rust
+  - Janet
+
+---
+
+Please let me know if you have a better algorithm or other optimizations for one
+or more implementations.
